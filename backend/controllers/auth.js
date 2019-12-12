@@ -2,7 +2,9 @@ const User = require('../models/user')
 const shortId = require('shortId')
 const jwt = require('jsonwebtoken')
 const expressJwt =require('express-jwt')
-exports.signup = (req, res) =>{
+
+
+exports.signUp = (req, res) =>{
     User.findOne({email: req.body.email}).exec((err, user)=>{
         if(user){
             return res.status(400).json({
@@ -27,7 +29,8 @@ exports.signup = (req, res) =>{
         })
     })
 }
-exports.signin = (req, res) =>{
+
+exports.signIn = (req, res) =>{
    const{email, password} = req.body
    User.findOne({email}).exec((err, user) =>{
        if(err || !user){
@@ -40,6 +43,26 @@ exports.signin = (req, res) =>{
                error: "Email and password do not match."
            })
        }
+       const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
+
+       res.cookie('token', token, {expiresIn: '1d'})
+
+       const {_id, username, name, email, role} = user
+       return res.json({
+           token,
+           user: {_id, username, name, email, role}
+       })
 
    })
 }
+
+exports.signOut = (req, res, next)=>{
+    res.clearCookie('token')
+    res.json({
+        message: 'Signed out'
+    })
+}
+
+exports.requireSignIn = expressJwt({
+    secret: process.env.JWT_SECRET
+})

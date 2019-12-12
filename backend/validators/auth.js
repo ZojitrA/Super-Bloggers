@@ -3,7 +3,7 @@ const {check} = require('express-validator')
 
 
 
-exports.userSignupValidator = [
+exports.userSignUpValidator = [
     check('name')
     .not()
     .isEmpty()
@@ -18,7 +18,7 @@ exports.userSignupValidator = [
     .withMessage('Password must be at least 6 character long')
 ]
 
-exports.userSignupValidator = [
+exports.userSignInValidator = [
 
     check('email')
     .isEmail()
