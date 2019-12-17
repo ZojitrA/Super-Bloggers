@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import {APP_NAME} from '../config.js'
-import Link from 'next/link'
 import "./Header.scss"
-
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { APP_NAME } from '../config';
+import {signout, isAuth} from '../actions/auth'
+import Router from 'next/router'
 import {
   Collapse,
   Navbar,
@@ -14,50 +15,49 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  NavbarText
+  DropdownItem
 } from 'reactstrap';
 
+const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-class Header extends React.Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            isOpen: false
-        }
-        this.toggle = this.toggle.bind(this)
-    }
-  
+  const toggle = () => {
+    setIsOpen(!isOpen);
+  };
 
-    toggle(){
-        this.setState({
-            isOpen: !this.state.isOpen
-        })
-        
-    }
-
-  render() {
-      
-    return(
+  return (
     <div>
       <Navbar color="light" light expand="md">
-        <Link href="/"><a className='x'>X</a></Link>
-        <NavbarToggler onClick={this.toggle} />
-        <Collapse isOpen={this.state.isOpen} navbar>
-          <Nav className="mr-auto navbar">
-            <NavItem>
-            <Link href="/signup"><a className="NavLink">Signup</a></Link>
-            </NavItem>
-            <NavItem>
-              <Link href="/signin"><a className="NavLink">Signin</a></Link>
-            </NavItem>
+        <Link href="/">
+          <NavLink className="font-weight-bold head">{APP_NAME}</NavLink>
+        </Link>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          <Nav className="ml-auto" navbar>
+            {!isAuth() && (
+              <React.Fragment>
+                <NavItem>
+                  <Link href="/signin">
+                    <NavLink className="link">Signin</NavLink>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/signup">
+                    <NavLink className="link">Signup</NavLink>
+                  </Link>
+                </NavItem>
+              </React.Fragment>
+            )}
+            {isAuth() && (
+              <NavItem>
+                  <NavLink className="link" onClick={()=> signout(()=>{Router.replace('/signin')})}>Signout</NavLink>
+              </NavItem>
+            )}
           </Nav>
-          <NavbarText>{APP_NAME}</NavbarText>
         </Collapse>
       </Navbar>
     </div>
-    );
-}
-}
+  );
+};
 
 export default Header;

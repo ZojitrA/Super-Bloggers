@@ -7,7 +7,7 @@ const expressJwt =require('express-jwt')
 exports.signUp = (req, res) =>{
     User.findOne({email: req.body.email}).exec((err, user)=>{
         if(user){
-            return res.status(400).json({
+            return res.json({
                 error: 'Already an account with that email'
             })
         }
@@ -34,12 +34,12 @@ exports.signIn = (req, res) =>{
    const{email, password} = req.body
    User.findOne({email}).exec((err, user) =>{
        if(err || !user){
-           return res.status(400).json({
+           return res.json({
                error: "User not found. Try again later maybe."
            })
        }
        if(!user.authenticate(password)){
-           return res.status(400).json({
+           return res.json({
                error: "Email and password do not match."
            })
        }

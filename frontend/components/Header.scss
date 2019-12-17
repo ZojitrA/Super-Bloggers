@@ -1,10 +1,26 @@
 .nav{
+  display: flex;
+  justify-content: space-between;
   width: 200px;
+  padding-left: 50px;
 
   color: gray !important;
 }
 
-a{
-  color: inherit;
+.link{
+  justify-content: center;
+  display: flex;
+}
+
+.link:hover{
+  cursor: pointer;
+  color: rgba(68, 161, 68, 0.993) !important;
   text-decoration: none;
+}
+.head{
+  color: darkgray
+}
+.head:hover{
+  cursor: pointer;
+  color: rgba(68, 161, 68, 0.993) !important;
 }

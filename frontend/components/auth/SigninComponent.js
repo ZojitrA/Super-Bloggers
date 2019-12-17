@@ -1,15 +1,15 @@
 
 import {useState} from 'react'
-import {Signup} from '../../actions/auth'
+import {Signin, authenticate} from '../../actions/auth'
 import { ReactTransitionGroup } from 'react-transition-group'
 import "./auth.scss"
+import Router from 'next/router'
 
 
 
-const SignupComponent = () =>{
+const SigninComponent = () =>{
 
     const [values, setValues] = useState({
-        name: 'Amiracle',
         email: 'sojiman@gmail.com',
         password: 'bubblebuttz',
         error: '',
@@ -18,31 +18,27 @@ const SignupComponent = () =>{
         showForm: true
     })
 
-    const {name, email, password, error, loading, message, showForm} = values
+    const {email, password, error, loading, message, showForm} = values
 
     const handleSubmit = (e)=>{
         e.preventDefault()
         setValues({...values, loading: true, error: false})
-        const user = {name, email, password}
+        const user = {email, password}
 
-        Signup(user)
+        Signin(user)
         .then(data =>{
             if(data.error){
                 setValues({...values, error: data.error, loading: false})
             }else{
-                setValues({
-                    ...values, 
-                    name: '', 
-                    email: '', 
-                    password: '', 
-                    error: '', 
-                    loading: false, 
-                    message: data.message,
-                    showForm: false
+                authenticate(data, ()=>{
+                    Router.push(`/`)
+
                 })
+            
             }
         })
     }
+
 
     const handleChange = (item) => (e)=>{
         setValues({...values, [item]: e.target.value})
@@ -55,14 +51,6 @@ const SignupComponent = () =>{
     const signupForm = () =>{
         return (
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <input
-                    value={name}
-                    onChange={handleChange('name')} 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="enter your name"/>
-                </div>
                 <div className="form-group">
                     <input 
                     value={email}
@@ -78,7 +66,7 @@ const SignupComponent = () =>{
                     placeholder="enter your password"/>
                 </div>
                 <div>
-                    <button className=" btn btn-primary">Sign Up</button>
+                    <button className=" btn btn-primary">Sign In</button>
                 </div>
             </form>
         )
@@ -99,4 +87,4 @@ const SignupComponent = () =>{
 
 }
 
-export default SignupComponent
+export default SigninComponent
